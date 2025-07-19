@@ -1,0 +1,56 @@
+.meshy-modal {
+  /* position: centered; --> gibt es nicht, stattdessen: */
+  position: fixed;            /* fixiert das Modal auf der Seite */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 600px;
+  width: 480px;
+  min-height: 3px;
+  margin: 0;                 /* wird durch fixed positioning ersetzt */
+  padding: 2rem;             /* rundum Abstand */
+  border-radius: 1rem;
+  font-family: "Segoe UI", sans-serif;
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;       /* zentriert den Inhalt horizontal */
+}
+
+/* Neuer Header-Container für Titel + Close-Button auf einer Linie */
+.modal-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Titel links, Button rechts */
+  align-items: center;             /* vertikal zentriert */
+  margin-bottom: 1.5rem;
+  padding-right: 2rem;             /* optional, um Close-Button etwas vom Rand abzurücken */
+}
+
+.modal-title {
+  color: #000000;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1; 
+  margin-top: 0;                    /* Kein extra margin, da Header Container spacing regelt */
+  text-align: left;              /* Links ausrichten, weil Header flex */
+  flex-grow: 1;                  /* Damit der Titel den verfügbaren Platz nutzt */
+}
+
+.modal-close {
+  position: right;              /* Nicht mehr absolut, sondern im flex-container */
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  margin-left: 1rem;
+  flex-shrink: 0;                /* Nicht schrumpfen */
+}
+
+.modal-close:hover {
+  color: #e53935;
+}
