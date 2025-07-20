@@ -17,30 +17,12 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
   const sceneRef = useRef();
   const animationIdRef = useRef();
   const modelObjectRef = useRef(null); // To keep track of the current model in the scene
+  const gridHelperRef = useRef(null); // Ref for the grid helper
 
   useEffect(() => {
     // Clear any previous errors or loading states when modelUrl changes
     setError(null);
     setLoading(false);
-
-    if (!modelUrl || !containerRef.current) {
-      // If no modelUrl, ensure no canvas is displayed or previous one is removed
-      if (rendererRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-        controlsRef.current?.dispose();
-        rendererRef.current.dispose();
-        if (containerRef.current && containerRef.current.contains(rendererRef.current.domElement)) {
-          containerRef.current.removeChild(rendererRef.current.domElement);
-        }
-        sceneRef.current = null;
-        controlsRef.current = null;
-        rendererRef.current = null;
-        modelObjectRef.current = null;
-      }
-      return; // Exit if no modelUrl or container
-    }
-
-    setLoading(true); // Start loading state
 
     // Cleanup old renderer & canvas if exist
     if (rendererRef.current) {
@@ -48,22 +30,21 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
       cancelAnimationFrame(animationIdRef.current);
       controlsRef.current?.dispose();
       rendererRef.current.dispose();
-      if (
-        containerRef.current &&
-        rendererRef.current.domElement &&
-        containerRef.current.contains(rendererRef.current.domElement)
-      ) {
+      if (containerRef.current && containerRef.current.contains(rendererRef.current.domElement)) {
         containerRef.current.removeChild(rendererRef.current.domElement);
       }
       sceneRef.current = null;
       controlsRef.current = null;
       rendererRef.current = null;
       modelObjectRef.current = null;
+      if (gridHelperRef.current) { // Dispose existing grid if present
+        gridHelperRef.current.dispose();
+        gridHelperRef.current = null;
+      }
     }
 
     const width = containerRef.current.clientWidth;
-    // Ensure a minimum height for the viewer
-    const height = viewerHeight; // Use state for height
+    const height = viewerHeight;
 
     // Setup scene, camera, renderer
     const scene = new THREE.Scene();
@@ -98,6 +79,15 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
+    // Add Grid Helper initially
+    const size = 10;
+    const divisions = 10;
+    const gridHelper = new THREE.GridHelper(size, divisions, 0x444444, 0x888888); // Grey lines
+    gridHelper.material.opacity = 0.5;
+    gridHelper.material.transparent = true;
+    scene.add(gridHelper);
+    gridHelperRef.current = gridHelper;
+
 
     // Frame object function
     function frameObject(object) {
@@ -130,7 +120,6 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
     }
 
     // Load model
-    // Correctly extract the extension by stripping query parameters
     const cleanedUrl = modelUrl.split('?')[0];
     const ext = cleanedUrl.split('.').pop().toLowerCase();
     console.log(`ThreePreview: Attempting to load model from: ${modelUrl} (Type: ${ext})`);
@@ -143,6 +132,14 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
       }
       modelObjectRef.current = object;
       scene.add(object);
+
+      // Remove the grid helper when a model is loaded
+      if (gridHelperRef.current) {
+        scene.remove(gridHelperRef.current);
+        gridHelperRef.current.dispose(); // Dispose its resources
+        gridHelperRef.current = null;
+      }
+
       frameObject(object);
       setLoading(false); // End loading state
       setError(null); // Clear any previous error
@@ -152,7 +149,37 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
       console.error(`ThreePreview: Error loading ${ext.toUpperCase()}-model:`, errorEvent);
       setError(`Fehler beim Laden des Modells: ${errorEvent.message || 'Unbekannter Fehler'}. Bitte versuchen Sie es erneut oder wählen Sie eine andere Datei.`);
       setLoading(false); // End loading state
+
+      // If there's an error, ensure the grid is visible again if it was removed
+      if (!gridHelperRef.current) {
+        const size = 10;
+        const divisions = 10;
+        const newGridHelper = new THREE.GridHelper(size, divisions, 0x444444, 0x888888);
+        newGridHelper.material.opacity = 0.5;
+        newGridHelper.material.transparent = true;
+        scene.add(newGridHelper);
+        gridHelperRef.current = newGridHelper;
+      }
     };
+
+    if (!modelUrl) {
+        // If no modelUrl, just display the grid and placeholder
+        setLoading(false);
+        setError(null);
+        // Ensure the grid is present if no model is loaded
+        if (!gridHelperRef.current) {
+            const size = 10;
+            const divisions = 10;
+            const newGridHelper = new THREE.GridHelper(size, divisions, 0x444444, 0x888888);
+            newGridHelper.material.opacity = 0.5;
+            newGridHelper.material.transparent = true;
+            scene.add(newGridHelper);
+            gridHelperRef.current = newGridHelper;
+        }
+        return; // Exit here, no model to load
+    }
+
+    setLoading(true); // Start loading state if modelUrl exists
 
     let loader;
     if (ext === 'obj') {
@@ -168,7 +195,7 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
       setError('Nicht unterstütztes Dateiformat. Bitte laden Sie GLB, GLTF, OBJ oder FBX hoch.');
       setLoading(false);
       console.error(`ThreePreview: Unsupported file format: ${ext}`);
-      return; // Exit if format is not supported
+      return;
     }
 
     // Animation loop
@@ -182,7 +209,7 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
     // Handle window resize
     const handleResize = () => {
       const newWidth = containerRef.current.clientWidth;
-      const newHeight = containerRef.current.clientHeight; // Or use viewerHeight state
+      const newHeight = containerRef.current.clientHeight;
 
       camera.aspect = newWidth / newHeight;
       camera.updateProjectionMatrix();
@@ -202,6 +229,11 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
         disposeHierarchy(modelObjectRef.current);
         modelObjectRef.current = null;
       }
+      if (gridHelperRef.current) { // Dispose grid on cleanup
+        scene.remove(gridHelperRef.current);
+        gridHelperRef.current.dispose();
+        gridHelperRef.current = null;
+      }
 
       if (controlsRef.current) controlsRef.current.dispose();
       if (rendererRef.current) rendererRef.current.dispose();
@@ -218,7 +250,7 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
       controlsRef.current = null;
       rendererRef.current = null;
     };
-  }, [modelUrl, viewerHeight, onModelLoaded]); // Add viewerHeight to dependencies
+  }, [modelUrl, viewerHeight, onModelLoaded]);
 
   // Dispose helper
   function disposeHierarchy(node) {
@@ -261,7 +293,7 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
         alignItems: 'center',
         backgroundColor: '#000',
         overflow: 'hidden',
-        position: 'relative', // Needed for absolute positioning of messages
+        position: 'relative',
       }}
     >
       {loading && (
@@ -272,6 +304,11 @@ export default function ThreePreview({ modelUrl, onModelLoaded }) {
       {error && (
         <div style={{ color: '#ff4d4d', fontSize: '1rem', textAlign: 'center', padding: '1rem', zIndex: 10, position: 'absolute' }}>
           {error}
+        </div>
+      )}
+      {!modelUrl && !loading && !error && (
+        <div style={{ color: '#aaa', fontSize: '1.2rem', zIndex: 10, position: 'absolute' }}>
+          Wählen Sie ein Modell zum Bearbeiten
         </div>
       )}
     </div>
