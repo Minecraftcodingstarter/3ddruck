@@ -1,0 +1,387 @@
+/* General Body Styles */
+:root {
+  --primary-color: #2196F3;       /* Helles Blau */
+  --primary-dark: #1976D2;        /* Dunkleres Blau */
+  --bg-dark-1: #121212;           /* Haupt-Hintergrund bleibt dunkel */
+  --bg-dark-2: #1a1a1a;
+  --bg-dark-3: #282828;
+  --text-light: #e0e0e0;          /* Heller Text auf dunklem Hintergrund */
+  --text-dark: #121212;           /* Dunkler Text für helle Elemente */
+  --border-color: #555;           /* Optional: könnte zu einem Blauton angepasst werden */
+  --danger-color: #e53935;        /* Gefahr (rot) bleibt gleich */
+  --danger-dark: #b71c1c;
+
+}
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-dark-1); /* Hintergrundfarbe des Bodys */
+  color: var(--text-light);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+  background: var(--bg-dark-1); /* Hintergrund des gesamten Scrollbar-Bereichs, passend zum Body */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* Macht die Scrollbar-Spur transparent, sodass der Body-Hintergrund durchscheint */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #444; /* Dunkelgrauer Daumen des Scrollbalkens */
+  border-radius: 10px;
+  border: 3px solid var(--bg-dark-1); /* Erzeugt einen "Padding"-Effekt um den Daumen, passend zum Body-Hintergrund */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #666; /* Etwas heller auf Hover */
+}
+
+/* Entfernt die Pfeile oben und unten am Scrollbalken in Webkit-Browsern */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* For Firefox (less customization options) */
+/* Firefox uses 'scrollbar-color' and 'scrollbar-width' properties */
+/* Dies wird den Daumen und die Spur dunkel machen. Firefox unterstützt keine direkten Pfeil-Entfernungen über CSS */
+html {
+  scrollbar-color: #444 var(--bg-dark-1); /* thumb color track color (Daumenfarbe #444, Spurfarbe passend zum Body) */
+  scrollbar-width: thin; /* 'auto' | 'thin' | 'none' */
+}
+
+/* Apply scrollbar styles to specific elements if needed, instead of globally */
+/* For example, if your main content area has a specific class like 'app-content' */
+.app-content {
+  /* You might need to set overflow on this element for its scrollbar to be styled */
+  overflow-y: auto; /* Or 'scroll' */
+}
+
+/* App Layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.app-content {
+  display: grid;
+  grid-template-columns: 35% 1fr;
+  flex-grow: 1;
+  overflow: hidden; /* Verhindert, dass die ganze Seite scrollt */
+  padding-top: 80px; /* Platz für den fixierten Header */
+}
+
+/* --- Header --- */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--bg-dark-2); /* Dunkler als Body, aber nicht reines Schwarz */
+  border-bottom: 1px solid var(--primary-color);
+  gap: 1.5rem; /* Provides space between elements */
+}
+
+.site-logo {
+  /* clamp(MIN, IDEAL, MAX) creates fluid font sizes */
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  color: var(--primary-color);
+  text-decoration: none;
+  flex-shrink: 0; /* Prevents the logo from shrinking */
+}
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.main-nav a {
+  color: var(--text-light);
+  text-decoration: none;
+  font-weight: 500;
+  padding-bottom: 0.25rem;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+/* This handles the hover effect without JavaScript */
+.main-nav a:hover {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0; /* Prevents the auth section from shrinking */
+}
+
+.username-text {
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+.auth-button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: white;
+}
+
+.login-button { background-color: var(--primary-color); }
+.login-button:hover { background-color: var(--primary-dark); }
+.logout-button { background-color: var(--danger-color); }
+.logout-button:hover { background-color: var(--danger-dark); }
+
+/* --- Main Content Areas --- */
+.left-sidebar, .main-content, .full-width-content {
+  padding: 1.5rem;
+  overflow-y: auto; /* Erlaubt internes Scrollen, falls nötig */
+  height: calc(100vh - 80px); /* Füllt die Höhe aus */
+}
+.left-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.description-box {
+  background-color: var(--bg-dark-2); /* Dunkler als Body, für Kontrast */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.6;
+}
+.description-box .description-title {
+    color: var(--primary-color);
+    font-size: clamp(1.4rem, 2vw, 1.8rem);
+    margin-bottom: 1rem;
+}
+.file-upload-section {
+  flex-shrink: 0;
+  background-color: var(--bg-dark-2); /* Dunkler als Body, für Kontrast */
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center; /* Zentriert den Inhalt */
+}
+.upload-btn {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.upload-btn:hover {
+  background-color: var(--primary-dark);
+}
+.upload-btn:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+.file-name-display {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #aaa;
+}
+.empty-content-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #aaa;
+  text-align: center;
+  background-color: var(--bg-dark-2); /* Passend zum dunklen Thema */
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+.purchase-button {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: var(--primary-dark);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.purchase-button:hover {
+    background-color: var(--primary-color);
+}
+.full-width-content {
+  grid-column: 1 / -1; /* Nimmt die volle Breite ein */
+}
+.page-title {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+}
+.support-page {
+    text-align: center;
+    line-height: 1.8;
+    background-color: var(--bg-dark-2);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto; /* Zentriert die Box */
+}
+.support-page a {
+    color: var(--primary-color);
+}
+
+
+/* --- Model Grid --- */
+.model-display-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem; /* Abstand vom Rand */
+}
+.model-card {
+    background-color: var(--bg-dark-3); /* Etwas heller als Header/Sidebar, für Hierarchie */
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column; /* Elemente werden untereinander angeordnet */
+    align-items: center; /* Elemente horizontal zentrieren */
+    gap: 0.5rem; /* Abstand zwischen den Elementen */
+    text-align: center;
+    /* min-height: 280px;  Beispiel, falls die Karte sonst zu klein wird */
+}
+.model-card canvas {
+    max-width: 100%;
+    height: 180px; /* Beibehalten oder leicht reduzieren */
+    background-color: var(--bg-dark-2);
+    border-radius: 8px;
+    margin-bottom: 0.5rem; /* Abstand zum Titel */
+}
+.model-title {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.85rem; /* Kleinere Schriftgröße */
+
+    /* Flexbox-Anpassungen für den Titel, um den Button sichtbar zu halten */
+    flex-grow: 0; /* Verhindert, dass der Titel übermäßig Platz einnimmt */
+    flex-shrink: 0; /* Verhindert, dass der Titel schrumpft, wenn nicht nötig */
+
+    /* Textüberlauf-Handling */
+    white-space: nowrap; /* Text in einer Zeile halten */
+    overflow: hidden; /* Überfließenden Text abschneiden */
+    text-overflow: ellipsis; /* Drei Punkte hinzufügen */
+    width: 100%; /* Wichtig, damit overflow/ellipsis funktionieren */
+    box-sizing: border-box; /* Sicherstellen, dass Padding/Border in die Breite passt */
+    padding: 0 0.2rem; /* Optional: leichtes Padding, falls der Text zu nah am Rand ist */
+}
+.model-select-button {
+    width: 100%; /* Der Button nimmt die volle Breite der Karte ein */
+    padding: 0.6rem;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    /* NEU: Flexbox-Anpassung, um sicherzustellen, dass der Button Platz bekommt */
+    flex-shrink: 0; /* Verhindert, dass der Button schrumpft */
+    margin-top: auto; /* Schiebt den Button nach unten, wenn freier Platz ist */
+}
+.model-select-button:hover {
+    background-color: var(--primary-dark);
+}
+
+
+/* ############################################# */
+/* #         RESPONSIVE STYLES (MOBILE)        # */
+/* ############################################# */
+
+@media (max-width: 768px) {
+  .app-content {
+    /* Wechsel zu einem einspaltigen Layout */
+    grid-template-columns: 1fr;
+    padding-top: 150px; /* Mehr Platz für den höheren Header */
+  }
+
+  /* Header wird vertikal gestapelt */
+  .site-header {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    height: auto;
+  }
+
+  /* Hauptnavigation wird zum Block, damit sie unter dem Logo erscheint */
+  .main-nav {
+    order: 2; /* Ändert die Reihenfolge */
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap; /* Erlaubt Umbruch der Links */
+  }
+  .auth-section {
+    order: 1;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+  .site-logo {
+      order: 0;
+  }
+
+  /* Linke Spalte und Hauptinhalt sind jetzt untereinander */
+  .left-sidebar, .main-content, .full-width-content {
+    height: auto; /* Höhe automatisch anpassen */
+    overflow-y: visible; /* Scrollen wieder normal */
+  }
+  .left-sidebar {
+    /* Auf kleinen Bildschirmen wird der Beschreibungstext nicht mehr gestreckt */
+    flex-grow: 0;
+  }
+
+  /* Spezifische Anpassungen für Mobile, wenn der Modus "myModels" oder "aiGenerator" ist */
+  .full-width-content {
+    padding: 1rem; /* Angepasstes Padding für Mobile */
+  }
+  .model-display-grid {
+    padding: 0; /* Entfernt Grid-Padding, da es schon vom .full-width-content kommt */
+  }
+  .model-card {
+    padding: 0.8rem;
+  }
+}

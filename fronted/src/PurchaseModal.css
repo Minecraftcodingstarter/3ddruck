@@ -1,0 +1,151 @@
+/* purchaseModal.css */
+.purchase-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.purchase-modal-container {
+  background-color: #121212;
+  color: #e0e0e0;
+  border: 2px solid #2196F3;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 480px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-title {
+  text-align: center;
+  color: #2196F3;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.modal-step {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.modal-box {
+  background: #1a1a1a;
+  border: 1px solid #555;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.modal-box label {
+  color: #2196F3;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-box input {
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  width: 100%;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #191919;
+  color: white;
+}
+
+.dimension-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.dim-note {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.3rem;
+}
+
+.input-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #1a1a1a;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.input-with-icon input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+}
+
+.error-msg {
+  color: #e53935;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.btn-next,
+.step-buttons button {
+  background-color: #2196F3;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-next:hover,
+.step-buttons button:hover {
+  background-color: #1976D2;
+}
+
+.step-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.purchase-modal-container {
+  border-radius: 20px !important;
+  overflow: hidden;
+}
